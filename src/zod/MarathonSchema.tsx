@@ -7,6 +7,11 @@ export const marathonSchema = z
       .string()
       .min(3, { message: "First name must have at least 3 letters" }),
     lname: z.string().min(5, "Last name must have at least 5 letters"),
+    password: z
+      .string()
+      .min(6, "Password must contain at least 6 charaters")
+      .max(12, "Password must not exceed 12 characters"),
+    confirmPassword: z.string(),
     plan: z.enum(["funrun", "mini", "half", "full"], {
       message: "Select a plan",
     }),
@@ -25,5 +30,9 @@ export const marathonSchema = z
       message: "Invalid coupon code",
       path: ["couponCode"],
     }
-  );
+  )
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 export type MarathonForm = z.infer<typeof marathonSchema>;
